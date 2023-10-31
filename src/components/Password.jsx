@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import './assets/css/Password.css';
+import utils from '../assets/utils/utils.js';
+import '../assets/style/Password.css';
 
 const Password = () => {
 	// State variables
@@ -36,7 +37,7 @@ const Password = () => {
 
     // Function to generate a random password
     const generateRandomPassword = () => {
-        const characterSets = [];
+        let characterSets = [];
 
         // Include selected character sets based on options
         if (passwordParams.includeUppercase) {
@@ -51,9 +52,18 @@ const Password = () => {
         if (passwordParams.includeSymbols) {
             characterSets.push(specialCharacters);
         }
+        if (passwordParams.includeEveryCharacter) {
+            characterSets = [everyCharacter];
+        }
         
         // Merge selected character sets into one array
-        const allCharacters = [].concat(...characterSets);
+        let allCharacters = [].concat(...characterSets);
+
+        // Remove similar characters if option is selected
+        if (passwordParams.excludeSimilarCharacters) {
+            // use a filter function to remove similar characters
+            allCharacters = allCharacters.filter(character => !similarCharacters.includes(character));
+        }
 
         let password = '';
 
@@ -73,7 +83,11 @@ const Password = () => {
 
     // Function to copy the generated password to the clipboard
     const copyPasswordToClipboard = () => {
-        // Your code to copy the password to the clipboard
+        // code to copy the password to the clipboard
+        navigator.clipboard.writeText(generatedPassword);
+        utils.showAlert('Password copied to clipboard!');
+
+
     };
 
     return (
@@ -109,7 +123,7 @@ const Password = () => {
                 </label>
                 <label>
                     Generate Password
-                    <button onClick={generateRandomPassword}>Generate Password</button>
+                    <button onClick={(e)=>{e.preventDefault(); generateRandomPassword()}}>Generate Password</button>
                 </label>
                 <label>
                     Password
@@ -121,7 +135,7 @@ const Password = () => {
                 </label>
                 <label>
                     Copy
-                    <button onClick={copyPasswordToClipboard}>Copy</button>
+                    <button onClick={(e)=>{e.preventDefault(); copyPasswordToClipboard()}}>Copy</button>
                 </label>
             </form>
         </div>
