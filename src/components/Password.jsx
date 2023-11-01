@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Alert } from './index.js';
 import utils from '../assets/utils/utils.js';
 import '../assets/style/Password.css';
 
@@ -15,6 +16,7 @@ const Password = () => {
 	});
     const [generatedPassword, setGeneratedPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
     // specialCharacters will include these characters: !"#$%&'()*+,-./:;<=>?@[\]^_`{|}~
     // Set a range of Unicode values for the special characters
@@ -85,9 +87,9 @@ const Password = () => {
     const copyPasswordToClipboard = () => {
         // code to copy the password to the clipboard
         navigator.clipboard.writeText(generatedPassword);
-        utils.showAlert('Password copied to clipboard!');
-
-
+        // set the alert message
+        setAlertMessage('Password copied to clipboard!');
+        utils.showAlert();
     };
 
     return (
@@ -110,7 +112,7 @@ const Password = () => {
                     <input type="checkbox" id="includeNumbers" checked={passwordParams.includeNumbers} onChange={e => setPasswordParams({ ...passwordParams, includeNumbers: e.target.checked })} />
                 </label>
                 <label>
-                    Include Symbols
+                    Include Special Characters
                     <input type="checkbox" id="includeSymbols" checked={passwordParams.includeSymbols} onChange={e => setPasswordParams({ ...passwordParams, includeSymbols: e.target.checked })} />
                 </label>
                 <label>
@@ -138,6 +140,7 @@ const Password = () => {
                     <button onClick={(e)=>{e.preventDefault(); copyPasswordToClipboard()}}>Copy</button>
                 </label>
             </form>
+            <Alert message={alertMessage} />
         </div>
     );
 };
